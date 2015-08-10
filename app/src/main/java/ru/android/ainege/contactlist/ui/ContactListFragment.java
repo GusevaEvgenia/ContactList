@@ -1,25 +1,31 @@
 package ru.android.ainege.contactlist.ui;
 
 import android.app.ListFragment;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.SimpleCursorAdapter;
 
 import ru.android.ainege.contactlist.R;
-
+import ru.android.ainege.contactlist.db.ContactTable;
 public class ContactListFragment extends ListFragment{
 
-    private ArrayAdapter<String> mAdapter;
-
-    final String[] namesArray = new String[] { "Илья", "Анна", "Костя", "Виктор", "Лена"};
+    private SimpleCursorAdapter mAdapter;
+    private Cursor mCursor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mAdapter = new ArrayAdapter<>(getActivity(), R.layout.list_item, R.id.name, namesArray);
+        mCursor = getActivity().getContentResolver().query(Uri.parse("content://ru.android.ainege.provider.ContractList/contacts"),
+                null, null, null, null);
+
+        String[] from = new String[] { ContactTable.COLUMN_NAME, ContactTable.COLUMN_EMAIL};
+        int[] to = new int[] { R.id.name, R.id.email };
+        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.list_item, mCursor, from, to, 0);
         setListAdapter(mAdapter);
     }
 
@@ -28,4 +34,6 @@ public class ContactListFragment extends ListFragment{
         View v = inflater.inflate(R.layout.fragment_contact_list, container, false);
         return v;
     }
+
+
 }

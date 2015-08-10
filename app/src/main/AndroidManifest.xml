@@ -7,6 +7,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+
         <activity
             android:name=".ui.ContactListActivity"
             android:label="@string/app_name" >
@@ -16,6 +17,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <provider
+            android:authorities="ru.android.ainege.provider.ContractList"
+            android:name=".provider.ContactListContentProvider"
+            android:exported="true" />
     </application>
 
 </manifest>

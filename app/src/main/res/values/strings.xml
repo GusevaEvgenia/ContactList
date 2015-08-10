@@ -2,4 +2,7 @@
     <string name="app_name">Contact List</string>
 
     <string name="add_contact">Добавить контакт</string>
+
+    <string name="error_wrong_uri">Неправильный URI: </string>
+    <string name="error_insert">Ошибка при добавлении по URI: </string>
 </resources>
