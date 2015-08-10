@@ -1,32 +1,36 @@
 package ru.android.ainege.contactlist.ui;
 
 import android.app.ListFragment;
+import android.app.LoaderManager;
+import android.content.Context;
+import android.content.CursorLoader;
+import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SimpleCursorAdapter;
+import android.widget.CursorAdapter;
+import android.widget.ImageView;
+import android.widget.ResourceCursorAdapter;
+import android.widget.TextView;
 
 import ru.android.ainege.contactlist.R;
 import ru.android.ainege.contactlist.db.ContactTable;
-public class ContactListFragment extends ListFragment{
+import ru.android.ainege.contactlist.provider.ContactListContract;
 
-    private SimpleCursorAdapter mAdapter;
-    private Cursor mCursor;
+public class ContactListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
+
+    private CursorAdapter mAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mCursor = getActivity().getContentResolver().query(Uri.parse("content://ru.android.ainege.provider.ContractList/contacts"),
-                null, null, null, null);
-
-        String[] from = new String[] { ContactTable.COLUMN_NAME, ContactTable.COLUMN_EMAIL};
-        int[] to = new int[] { R.id.name, R.id.email };
-        mAdapter = new SimpleCursorAdapter(getActivity(), R.layout.list_item, mCursor, from, to, 0);
+        mAdapter = new ContactsAdapter(R.layout.list_item, null);
         setListAdapter(mAdapter);
+
+        getLoaderManager().initLoader(0, null, this);
     }
 
     @Override
@@ -35,5 +39,37 @@ public class ContactListFragment extends ListFragment{
         return v;
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getActivity(), ContactListContract.Contacts.CONTENT_URI, null, null, null, null);
+    }
 
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
+    }
+
+    private class ContactsAdapter extends ResourceCursorAdapter {
+
+        public ContactsAdapter(int layout, Cursor c) {
+            super(getActivity(), layout, c, 0);
+        }
+
+        @Override
+        public void bindView(View view, Context context, Cursor cursor) {
+            ImageView photo = (ImageView) view.findViewById(R.id.avatar);
+            photo.setImageResource(R.drawable.default_avatar);
+
+            TextView name = (TextView) view.findViewById(R.id.name);
+            name.setText(cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_NAME)));
+
+            TextView price = (TextView) view.findViewById(R.id.email);
+            price.setText(cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_EMAIL)));
+        }
+    }
 }
