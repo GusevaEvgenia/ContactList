@@ -5,11 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/avatar"
         android:layout_width="@dimen/item_height"
-        android:layout_height="@dimen/item_height"
-        android:src="@drawable/default_avatar" />
+        android:layout_height="@dimen/item_height" />
 
     <LinearLayout
         android:orientation="vertical"
