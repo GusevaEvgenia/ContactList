@@ -43,7 +43,8 @@
         android:layout_width="@dimen/item_list_height"
         android:layout_height="@dimen/item_list_height"
         android:layout_gravity="center"
-        android:layout_marginBottom="@dimen/element_margin" />
+        android:layout_marginBottom="@dimen/element_margin"
+        android:src="@drawable/default_avatar"/>
 
     <Button
         android:id="@+id/ok_button"

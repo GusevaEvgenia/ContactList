@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import ru.android.ainege.contactlist.Gravatar;
 import ru.android.ainege.contactlist.R;
 
 public class ContactFragment extends Fragment {
@@ -55,6 +58,8 @@ public class ContactFragment extends Fragment {
             mName.setText(getArguments().getString(NAME));
             mSurname.setText(getArguments().getString(SURNAME));
             mEmail.setText(getArguments().getString(EMAIL));
+
+            loadImage();
         }
 
         Button ok = (Button) v.findViewById(R.id.ok_button);
@@ -79,6 +84,7 @@ public class ContactFragment extends Fragment {
 
     private boolean saveData() {
         if (isValid()) {
+            loadImage();
             return true;
         } else {
             return false;
@@ -96,6 +102,12 @@ public class ContactFragment extends Fragment {
             mEmail.setError(getResources().getText(R.string.error_email));
             return false;
         }
+    }
+
+    private void loadImage() {
+        String gravatarUrl = Gravatar.getUri(mEmail.getText().toString().trim());
+        ImageLoader imageLoader = ImageLoader.getInstance();
+        imageLoader.displayImage(gravatarUrl, mAvatar);
     }
 
     private void slideDown() {

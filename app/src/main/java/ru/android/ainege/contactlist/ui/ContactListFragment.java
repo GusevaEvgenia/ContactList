@@ -2,6 +2,7 @@ package ru.android.ainege.contactlist.ui;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -18,6 +19,9 @@ import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import ru.android.ainege.contactlist.Gravatar;
 import ru.android.ainege.contactlist.R;
 import ru.android.ainege.contactlist.db.ContactTable;
 import ru.android.ainege.contactlist.provider.ContactListContract;
@@ -52,15 +56,15 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
         String email = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_EMAIL));
 
         FragmentManager fm = getFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragment_contact_container);
+        Fragment newFragment = ContactFragment.newInstance(name, surname, email);
+        FragmentTransaction transaction = fm.beginTransaction();
 
-        if(fragment == null){
-            fragment = ContactFragment.newInstance(name, surname, email);
-            fm.beginTransaction()
-                    .setCustomAnimations(R.animator.slide_up, 0)
-                    .add(R.id.fragment_contact_container, fragment)
-                    .commit();
+        if(fm.findFragmentById(R.id.fragment_contact_container) == null){
+           transaction.setCustomAnimations(R.animator.slide_up, 0).add(R.id.fragment_contact_container, newFragment);
+        } else {
+            transaction.replace(R.id.fragment_contact_container, newFragment);
         }
+        transaction.commit();
     }
 
     @Override
@@ -87,15 +91,19 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
+            String mail = cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_EMAIL));
             ImageView photo = (ImageView) view.findViewById(R.id.photo);
-            photo.setImageResource(R.drawable.default_avatar);
+
+            String gravatarUrl = Gravatar.getUri(mail);
+            ImageLoader imageLoader = ImageLoader.getInstance();
+            imageLoader.displayImage(gravatarUrl, photo);
 
             TextView name = (TextView) view.findViewById(R.id.name);
             name.setText(cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_NAME)) + " " +
                     cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_SURNAME)));
 
-            TextView price = (TextView) view.findViewById(R.id.email);
-            price.setText(cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_EMAIL)));
+            TextView email = (TextView) view.findViewById(R.id.email);
+            email.setText(mail);
         }
     }
 }
