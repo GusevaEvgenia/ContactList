@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bar_color">#a09f9f</color>
+    <color name="bar">#a09f9f</color>
+    <color name="fragment">#6a6969</color>
+    <color name="green">#3db32d</color>
 </resources>

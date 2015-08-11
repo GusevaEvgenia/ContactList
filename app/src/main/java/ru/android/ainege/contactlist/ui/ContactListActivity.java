@@ -11,17 +11,19 @@ import ru.android.ainege.contactlist.R;
 
 public class ContactListActivity extends AppCompatActivity {
 
+    FragmentManager mFm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_list);
 
-        FragmentManager fm = getFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        mFm = getFragmentManager();
+        Fragment fragment = mFm.findFragmentById(R.id.fragment_container);
 
         if(fragment == null){
             fragment = new ContactListFragment();
-            fm.beginTransaction().add(R.id.fragment_container, fragment).commit();
+            mFm.beginTransaction().add(R.id.fragment_container, fragment).commit();
         }
     }
 
@@ -36,6 +38,12 @@ public class ContactListActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.add_contact) {
+            Fragment fragment = mFm.findFragmentById(R.id.fragment_contact_container);
+
+            if(fragment == null){
+                fragment = new ContactFragment();
+                mFm.beginTransaction().add(R.id.fragment_contact_container, fragment).commit();
+            }
             return true;
         }
 

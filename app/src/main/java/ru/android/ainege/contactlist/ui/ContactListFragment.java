@@ -1,5 +1,7 @@
 package ru.android.ainege.contactlist.ui;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.ListFragment;
 import android.app.LoaderManager;
 import android.content.Context;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ResourceCursorAdapter;
 import android.widget.TextView;
 
@@ -22,6 +25,7 @@ import ru.android.ainege.contactlist.provider.ContactListContract;
 public class ContactListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private CursorAdapter mAdapter;
+    private Cursor mCursor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,12 +44,30 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
     }
 
     @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        mCursor.moveToPosition(position);
+
+        String name = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_NAME));
+        //String surname = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_SURNAME));
+        String email = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_EMAIL));
+
+        FragmentManager  fm = getFragmentManager();
+        Fragment fragment = fm.findFragmentById(R.id.fragment_contact_container);
+
+        if(fragment == null){
+            fragment = ContactFragment.newInstance(name, "surname", email);
+            fm.beginTransaction().add(R.id.fragment_contact_container, fragment).commit();
+        }
+    }
+
+    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(getActivity(), ContactListContract.Contacts.CONTENT_URI, null, null, null, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        mCursor = data;
         mAdapter.swapCursor(data);
     }
 
@@ -62,7 +84,7 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
 
         @Override
         public void bindView(View view, Context context, Cursor cursor) {
-            ImageView photo = (ImageView) view.findViewById(R.id.avatar);
+            ImageView photo = (ImageView) view.findViewById(R.id.photo);
             photo.setImageResource(R.drawable.default_avatar);
 
             TextView name = (TextView) view.findViewById(R.id.name);
