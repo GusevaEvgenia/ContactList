@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -51,7 +53,7 @@ public class ContactFragment extends Fragment{
         ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteFragment();
+                slideDown();
             }
         });
 
@@ -59,15 +61,31 @@ public class ContactFragment extends Fragment{
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteFragment();
+                slideDown();
             }
         });
         return v;
     }
 
-    private void deleteFragment() {
-        FragmentManager fm = getFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragment_contact_container);
-        fm.beginTransaction().remove(fragment).commit();
+    private void slideDown() {
+        TranslateAnimation trans = new TranslateAnimation(0, 0, 0, 1280);
+        trans.setDuration(200);
+        trans.setAnimationListener(new Animation.AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                FragmentManager fm = getFragmentManager();
+                fm.beginTransaction().remove(fm.findFragmentById(R.id.fragment_contact_container)).commit();
+            }
+        });
+        getView().startAnimation(trans);
     }
 }

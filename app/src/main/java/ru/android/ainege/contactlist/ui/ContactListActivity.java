@@ -42,7 +42,10 @@ public class ContactListActivity extends AppCompatActivity {
 
             if(fragment == null){
                 fragment = new ContactFragment();
-                mFm.beginTransaction().add(R.id.fragment_contact_container, fragment).commit();
+                mFm.beginTransaction()
+                        .setCustomAnimations(R.animator.slide_up, 0)
+                        .add(R.id.fragment_contact_container, fragment)
+                        .commit();
             }
             return true;
         }
