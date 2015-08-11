@@ -48,14 +48,14 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
         mCursor.moveToPosition(position);
 
         String name = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_NAME));
-        //String surname = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_SURNAME));
+        String surname = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_SURNAME));
         String email = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_EMAIL));
 
         FragmentManager fm = getFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_contact_container);
 
         if(fragment == null){
-            fragment = ContactFragment.newInstance(name, "surname", email);
+            fragment = ContactFragment.newInstance(name, surname, email);
             fm.beginTransaction()
                     .setCustomAnimations(R.animator.slide_up, 0)
                     .add(R.id.fragment_contact_container, fragment)
@@ -91,7 +91,8 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
             photo.setImageResource(R.drawable.default_avatar);
 
             TextView name = (TextView) view.findViewById(R.id.name);
-            name.setText(cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_NAME)));
+            name.setText(cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_NAME)) + " " +
+                    cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_SURNAME)));
 
             TextView price = (TextView) view.findViewById(R.id.email);
             price.setText(cursor.getString(cursor.getColumnIndex(ContactTable.COLUMN_EMAIL)));
