@@ -13,5 +13,10 @@ public final class ContactListContract {
 
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/contacts";
         public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/contact";
+
+        public static final String TABLE_NAME = "Contact";
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_SURNAME = "surname";
+        public static final String COLUMN_EMAIL = "email";
     }
 }

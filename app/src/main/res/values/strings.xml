@@ -11,5 +11,6 @@
 
     <string name="error_wrong_uri">Неправильный URI: </string>
     <string name="error_insert">Ошибка при добавлении по URI: </string>
-    <string name="error_email">Неверный email </string>
+    <string name="error_email">Проверти email </string>
+    <string name="error_name">Заполните имя </string>
 </resources>

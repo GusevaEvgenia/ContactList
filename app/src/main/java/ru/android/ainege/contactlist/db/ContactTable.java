@@ -4,12 +4,14 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 
+import ru.android.ainege.contactlist.provider.ContactListContract;
+
 
 public class ContactTable {
-    public static final String TABLE_NAME = "Contact";
-    public static final String COLUMN_NAME = "name";
-    public static final String COLUMN_SURNAME = "surname";
-    public static final String COLUMN_EMAIL = "email";
+    public static final String TABLE_NAME = ContactListContract.Contacts.TABLE_NAME;
+    public static final String COLUMN_NAME = ContactListContract.Contacts.COLUMN_NAME;
+    public static final String COLUMN_SURNAME = ContactListContract.Contacts.COLUMN_SURNAME;
+    public static final String COLUMN_EMAIL = ContactListContract.Contacts.COLUMN_EMAIL;
 
     private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_NAME
             + "("

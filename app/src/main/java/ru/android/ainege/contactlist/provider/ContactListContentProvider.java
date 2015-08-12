@@ -12,7 +12,6 @@ import android.provider.BaseColumns;
 import android.text.TextUtils;
 
 import ru.android.ainege.contactlist.R;
-import ru.android.ainege.contactlist.db.ContactTable;
 import ru.android.ainege.contactlist.db.DataBaseHelper;
 
 public class ContactListContentProvider extends ContentProvider{
@@ -41,7 +40,7 @@ public class ContactListContentProvider extends ContentProvider{
             case CONTACT_ID:
                 selection = prepareSelection(uri, selection);
             case CONTACTS:
-                tableName = ContactTable.TABLE_NAME;
+                tableName = ContactListContract.Contacts.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_wrong_uri) + uri);
@@ -71,7 +70,7 @@ public class ContactListContentProvider extends ContentProvider{
         String tableName;
         switch (uriMatcher.match(uri)) {
             case CONTACTS:
-                tableName = ContactTable.TABLE_NAME;
+                tableName =ContactListContract.Contacts.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_wrong_uri) + uri);
@@ -95,7 +94,7 @@ public class ContactListContentProvider extends ContentProvider{
             case CONTACT_ID:
                 selection = prepareSelection(uri, selection);
             case CONTACTS:
-                tableName = ContactTable.TABLE_NAME;
+                tableName = ContactListContract.Contacts.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_wrong_uri) + uri);
@@ -117,7 +116,7 @@ public class ContactListContentProvider extends ContentProvider{
             case CONTACT_ID:
                 selection = prepareSelection(uri, selection);
             case CONTACTS:
-                tableName = ContactTable.TABLE_NAME;
+                tableName = ContactListContract.Contacts.TABLE_NAME;
                 break;
             default:
                 throw new IllegalArgumentException(getContext().getResources().getString(R.string.error_wrong_uri) + uri );

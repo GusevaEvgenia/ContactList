@@ -10,6 +10,7 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,12 +52,13 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
     public void onListItemClick(ListView l, View v, int position, long id) {
         mCursor.moveToPosition(position);
 
+        long idContact = mCursor.getLong(mCursor.getColumnIndex(BaseColumns._ID));
         String name = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_NAME));
         String surname = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_SURNAME));
         String email = mCursor.getString(mCursor.getColumnIndex(ContactTable.COLUMN_EMAIL));
 
         FragmentManager fm = getFragmentManager();
-        Fragment newFragment = ContactFragment.newInstance(name, surname, email);
+        Fragment newFragment = ContactFragment.newInstance(idContact, name, surname, email);
         FragmentTransaction transaction = fm.beginTransaction();
 
         if(fm.findFragmentById(R.id.fragment_contact_container) == null){

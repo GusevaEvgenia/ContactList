@@ -2,6 +2,8 @@ package ru.android.ainege.contactlist.ui;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -17,8 +19,10 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import ru.android.ainege.contactlist.Gravatar;
 import ru.android.ainege.contactlist.R;
+import ru.android.ainege.contactlist.provider.ContactListContract;
 
 public class ContactFragment extends Fragment {
+    public static final String ID = "id";
     public static final String NAME = "name";
     public static final String SURNAME = "surname";
     public static final String EMAIL = "email";
@@ -28,8 +32,9 @@ public class ContactFragment extends Fragment {
     private EditText mEmail;
     private ImageView mAvatar;
 
-    public static ContactFragment newInstance(String name, String surname, String email) {
+    public static ContactFragment newInstance(long id, String name, String surname, String email) {
         Bundle args = new Bundle();
+        args.putLong(ID, id);
         args.putString(NAME, name);
         args.putString(SURNAME, surname);
         args.putString(EMAIL, email);
@@ -85,6 +90,17 @@ public class ContactFragment extends Fragment {
     private boolean saveData() {
         if (isValid()) {
             loadImage();
+            ContentValues contentValue = new ContentValues();
+            contentValue.put(ContactListContract.Contacts.COLUMN_NAME, mName.getText().toString());
+            contentValue.put(ContactListContract.Contacts.COLUMN_SURNAME, mSurname.getText().toString());
+            contentValue.put(ContactListContract.Contacts.COLUMN_EMAIL, mEmail.getText().toString());
+            if (getArguments() == null) {
+                getActivity().getContentResolver().insert(ContactListContract.Contacts.CONTENT_URI, contentValue);
+            } else {
+                getActivity().getContentResolver().update(
+                        Uri.parse(ContactListContract.Contacts.CONTENT_URI + "/" + getArguments().getLong(ID)),
+                        contentValue, null, null);
+            }
             return true;
         } else {
             return false;
@@ -92,16 +108,26 @@ public class ContactFragment extends Fragment {
     }
 
     private boolean isValid() {
+        boolean result = true;
+        if (!TextUtils.isEmpty(mName.getText().toString().trim())) {
+            if (mName.getError() != null) {
+                mName.setError(null);
+            }
+        } else {
+            mName.setError(getResources().getText(R.string.error_name));
+            result = false;
+        }
+
         String email = mEmail.getText().toString().trim();
         if (!TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             if (mEmail.getError() != null) {
                 mEmail.setError(null);
             }
-            return true;
         } else {
             mEmail.setError(getResources().getText(R.string.error_email));
-            return false;
+            result = false;
         }
+        return result;
     }
 
     private void loadImage() {
