@@ -5,7 +5,9 @@ import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import ru.android.ainege.contactlist.Gravatar;
 import ru.android.ainege.contactlist.R;
@@ -31,6 +36,8 @@ public class ContactFragment extends Fragment {
     private EditText mSurname;
     private EditText mEmail;
     private ImageView mAvatar;
+    private boolean mIsTimer = false;
+    private boolean mIsDefaultImg = false;
 
     public static ContactFragment newInstance(long id, String name, String surname, String email) {
         Bundle args = new Bundle();
@@ -56,8 +63,43 @@ public class ContactFragment extends Fragment {
 
         mName = (EditText) v.findViewById(R.id.name_editText);
         mSurname = (EditText) v.findViewById(R.id.surname_editText);
-        mEmail = (EditText) v.findViewById(R.id.email_editText);
         mAvatar = (ImageView) v.findViewById(R.id.avatar);
+
+        mEmail = (EditText) v.findViewById(R.id.email_editText);
+        mEmail.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (checkEmail(s.toString()) && !mIsTimer){
+                    mIsTimer = true;
+                    new Timer().schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    loadImage();
+                                }
+                            });
+                        }
+                    }, 2500);
+                } else {
+                    if(!mIsTimer && !mIsDefaultImg) {
+                        mAvatar.setImageResource(R.drawable.default_avatar);
+                        mIsDefaultImg = true;
+                    }
+                }
+            }
+        });
 
         if (getArguments() != null) {
             mName.setText(getArguments().getString(NAME));
@@ -89,7 +131,6 @@ public class ContactFragment extends Fragment {
 
     private boolean saveData() {
         if (isValid()) {
-            loadImage();
             ContentValues contentValue = new ContentValues();
             contentValue.put(ContactListContract.Contacts.COLUMN_NAME, mName.getText().toString());
             contentValue.put(ContactListContract.Contacts.COLUMN_SURNAME, mSurname.getText().toString());
@@ -118,8 +159,7 @@ public class ContactFragment extends Fragment {
             result = false;
         }
 
-        String email = mEmail.getText().toString().trim();
-        if (!TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+        if (checkEmail(mEmail.getText().toString().trim())) {
             if (mEmail.getError() != null) {
                 mEmail.setError(null);
             }
@@ -130,10 +170,16 @@ public class ContactFragment extends Fragment {
         return result;
     }
 
+    private boolean checkEmail(String email) {
+        return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
     private void loadImage() {
         String gravatarUrl = Gravatar.getUri(mEmail.getText().toString().trim());
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.displayImage(gravatarUrl, mAvatar);
+        mIsDefaultImg = false;
+        mIsTimer = false;
     }
 
     private void slideDown() {
