@@ -1,0 +1,5 @@
+<resources>
+    <dimen name="side_margin">100dp</dimen>
+    <dimen name="land_margin">0dp</dimen>
+    <dimen name="avatar_details_size">100dp</dimen>
+</resources>

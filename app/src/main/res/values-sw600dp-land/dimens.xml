@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="side_margin">150dp</dimen>
+    <dimen name="land_margin">80dp</dimen>
+</resources>

@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="avatar_size">100dp</dimen>
+    <dimen name="input_size">300dp</dimen>
+</resources>
