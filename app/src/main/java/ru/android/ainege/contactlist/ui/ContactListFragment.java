@@ -32,6 +32,9 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
     private CursorAdapter mAdapter;
     private Cursor mCursor;
 
+    private TextView mEmptyText;
+    private ListView mList;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +48,8 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_contact_list, container, false);
+        mEmptyText = (TextView) v.findViewById(R.id.empty_list);
+        mList = (ListView) v.findViewById(android.R.id.list);
         return v;
     }
 
@@ -77,6 +82,13 @@ public class ContactListFragment extends ListFragment implements LoaderManager.L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursor = data;
+        if(mCursor != null && mCursor.getCount() > 0){
+            mList.setVisibility(View.VISIBLE);
+            mEmptyText.setVisibility(View.GONE);
+        } else {
+            mList.setVisibility(View.GONE);
+            mEmptyText.setVisibility(View.VISIBLE);
+        }
         mAdapter.swapCursor(data);
     }
 
