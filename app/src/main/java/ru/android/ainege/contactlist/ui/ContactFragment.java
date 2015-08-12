@@ -55,6 +55,7 @@ public class ContactFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
     @Override
@@ -79,21 +80,25 @@ public class ContactFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (checkEmail(s.toString()) && !mIsTimer){
+                if (checkEmail(s.toString().trim()) && !mIsTimer) {
                     mIsTimer = true;
                     new Timer().schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    loadImage();
-                                }
-                            });
+                            try {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        loadImage();
+                                    }
+                                });
+                            } catch (NullPointerException e){
+
+                            }
                         }
-                    }, 2500);
+                    }, 2000);
                 } else {
-                    if(!mIsTimer && !mIsDefaultImg) {
+                    if (!mIsTimer && !mIsDefaultImg) {
                         mAvatar.setImageResource(R.drawable.default_avatar);
                         mIsDefaultImg = true;
                     }
@@ -132,9 +137,9 @@ public class ContactFragment extends Fragment {
     private boolean saveData() {
         if (isValid()) {
             ContentValues contentValue = new ContentValues();
-            contentValue.put(ContactListContract.Contacts.COLUMN_NAME, mName.getText().toString());
-            contentValue.put(ContactListContract.Contacts.COLUMN_SURNAME, mSurname.getText().toString());
-            contentValue.put(ContactListContract.Contacts.COLUMN_EMAIL, mEmail.getText().toString());
+            contentValue.put(ContactListContract.Contacts.COLUMN_NAME, mName.getText().toString().trim());
+            contentValue.put(ContactListContract.Contacts.COLUMN_SURNAME, mSurname.getText().toString().trim());
+            contentValue.put(ContactListContract.Contacts.COLUMN_EMAIL, mEmail.getText().toString().trim());
             if (getArguments() == null) {
                 getActivity().getContentResolver().insert(ContactListContract.Contacts.CONTENT_URI, contentValue);
             } else {
