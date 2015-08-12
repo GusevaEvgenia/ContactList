@@ -27,9 +27,9 @@ public class ContactTable {
     }
 
     private static void initialData(SQLiteDatabase database) {
-        String[] name = { "Илья", "Ира", "Анна", "Стас", "Лена", "Артем" };
-        String[] surname = { "Иванов", "Титова", "Петрова", "Петренко", "Андреева", "Соболев" };
-        String[] email = {"Илья@gmail.com", "Ира@gmail.com", "Анна@gmail.com", "Стас@gmail.com", "Лена@gmail.com", "Артем@gmail.com"};
+        String[] name = { "Илья", "Ира", "Евгения", "Анна", "Стас", "Лена", "Артем" };
+        String[] surname = { "Иванов", "Титова", "Гусева", "Петрова", "Петренко", "Андреева", "Соболев" };
+        String[] email = {"Franek@gmail.com", "Irina@gmail.com", "ainege@gmail.com", "anna34@gmail.com", "Stas@gmail.com", "lena@gmail.com", "Sobolev@gmail.com"};
 
         for(int i = 0; i < name.length; i++) {
             ContentValues contentValue = new ContentValues();
